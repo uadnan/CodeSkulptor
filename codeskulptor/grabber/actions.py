@@ -4,9 +4,6 @@ import re
 class ReplaceAction:
     replace_with = None
 
-    def set_replace_with(self, replace_with):
-        self.replace_with = replace_with
-
     def __call__(self, content):
         return self.replace(content, self.replace_with)
 

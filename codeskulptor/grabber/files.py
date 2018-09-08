@@ -44,7 +44,7 @@ class FileContent:
         replace_with = self.grabber.urls.get_local_path(url)
         relative_path = self.generate_relative_path(replace_with)
 
-        replace_action.set_replace_with(relative_path)
+        replace_action.replace_with = relative_path
         self._actions.append(replace_action)
 
     def generate_relative_path(self, target):
