@@ -24,7 +24,8 @@ def legalise_name(name):
 
 
 class Grabber:
-    def __init__(self, base_url="http://www.codeskulptor.org"):
+    def __init__(self, base_url, verbose=False):
+        self.verbose = verbose
         self.base_url = normalise_url(base_url.rstrip("/"))
         self.session = requests.Session()
         self.session.headers["User-Agent"] = "Mozilla/5.0 Chrome/68.0.3440.106 Safari/537.36"
@@ -75,7 +76,8 @@ class Grabber:
                 index += 1
 
     def download(self, url):
-        print("Downloading %s" % url)
+        if self.verbose:
+            print("Downloading %s" % url)
 
         try:
             response = self.session.get(url, stream=True)
