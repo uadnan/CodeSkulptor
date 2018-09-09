@@ -2,13 +2,11 @@ import logging
 import os
 import requests
 import shutil
-import string
 from urllib.parse import urlparse
 
+from .constants import LEGAL_FILENAME_CHAR, EXTENSION_BY_MIME_TYPE
 from .files import get_file_handler
 from .urls import UrlStorage, normalise_url
-
-LEGAL_FILENAME_CHAR = "-_.() %s%s" % (string.ascii_letters, string.digits)
 
 
 def touch(path):
@@ -27,7 +25,7 @@ def legalise_name(name):
 
 class Grabber:
     def __init__(self, base_url="http://www.codeskulptor.org"):
-        self.base_url = normalise_url(base_url)
+        self.base_url = normalise_url(base_url.rstrip("/"))
         self.session = requests.Session()
         self.session.headers["User-Agent"] = "Mozilla/5.0 Chrome/68.0.3440.106 Safari/537.36"
 
@@ -70,22 +68,24 @@ class Grabber:
         index = 0
         while index < len(self._pending_files):
             file_content = self._pending_files[index]
-            if force or not file_content.has_pending_dependencies():
+            if not file_content.has_pending_dependencies() or force:
                 self._pending_files.pop(index)
                 file_content.write()
             else:
                 index += 1
 
     def download(self, url):
-        logging.error("GET: %s" % url)
+        print("Downloading %s" % url)
 
         try:
             response = self.session.get(url, stream=True)
         except Exception:
-            logging.exception("GET: %s failed" % url)
+            logging.exception("Error downloading: %s" % url)
             return
 
-        destination = self._suggest_destination(response.url)
+        content_type = response.headers.get("Content-Type", "text/plain").split(";")[0].strip()
+        destination = self._suggest_destination(response.url, content_type)
+
         if response.url != url:  # Handle redirect
             self.urls.set_local_path(url, destination)
             url = normalise_url(response.url)
@@ -102,7 +102,7 @@ class Grabber:
             for block in response.iter_content(1024):
                 out.write(block)
 
-    def _suggest_destination(self, url):
+    def _suggest_destination(self, url, content_type):
         directories = []
 
         if url.startswith(self.base_url):
@@ -119,6 +119,8 @@ class Grabber:
 
         filename = "index.html" if url.endswith("/") else directories.pop(-1)
         filename, extension = os.path.splitext(filename)
+        if not extension:
+            extension = EXTENSION_BY_MIME_TYPE.get(content_type)
 
         owner_directory = os.path.join(self.base_target, *directories)
         os.makedirs(owner_directory, exist_ok=True)

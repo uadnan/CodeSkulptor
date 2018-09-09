@@ -3,6 +3,7 @@ import re
 
 class ReplaceAction:
     replace_with = None
+    fragment = None
 
     def __call__(self, content):
         return self.replace(content, self.replace_with)
@@ -41,3 +42,22 @@ class ReplaceGATagAction:
 
     def __call__(self, content):
         return self.RE.sub("", content)
+
+
+class ReplaceSaveURLAction:
+    LOOKUP_URL = "\"//codeskulptor-{0}.commondatastorage.googleapis.com/\""
+    TAGS_TO_REPLACE = [
+        "googleid",
+        "policy",
+        "signature"
+    ]
+
+    def __call__(self, content):
+        if self.LOOKUP_URL not in content:
+            return content
+
+        content = content.replace(self.LOOKUP_URL, "\"/save/\"")
+        for tag in self.TAGS_TO_REPLACE:
+            content = re.sub(r"%s\s*:\s*\"[^\"]*\"" % tag, "%s:\"\"" % tag, content)
+
+        return content

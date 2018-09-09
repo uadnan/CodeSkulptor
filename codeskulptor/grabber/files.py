@@ -1,6 +1,7 @@
 import re
 from bs4 import BeautifulSoup
 
+from .constants import DISALLOWED_HOSTS
 from . import actions
 from .urls import normalise_url, is_absolute_url
 
@@ -11,6 +12,9 @@ def get_file_handler(extension):
 
     if extension == ".css":
         return CssFileContent
+
+    if extension == ".js":
+        return JavaScriptFileContent
 
 
 class FileContent:
@@ -45,6 +49,9 @@ class FileContent:
         relative_path = self.generate_relative_path(replace_with)
 
         replace_action.replace_with = relative_path
+        if replace_action.fragment is not None:
+            replace_action.replace_with += "#" + replace_action.fragment
+
         self._actions.append(replace_action)
 
     def generate_relative_path(self, target):
@@ -55,6 +62,8 @@ class FileContent:
 
         if source_url.netloc != target_url.netloc:
             parts = [".."] * (source_url.path.count("/") - 1)
+            if source_url.netloc != self.grabber.base_url.netloc:
+                parts.append("..")
         else:
             parts = [".."] * (source_url.path.count("/") - 1)
 
@@ -63,7 +72,15 @@ class FileContent:
 
     def crawl(self):
         for url, replace_action in self.find_links():
-            url = normalise_url(url.strip(), self.url)
+            url = url.strip()
+
+            parts = url.split("#", 1)
+            if len(parts) == 2:
+                url, replace_action.fragment = parts
+
+            url = normalise_url(url, self.url)
+            if url.netloc in DISALLOWED_HOSTS:
+                continue
 
             try:
                 self._resolve_dependency(url, replace_action)
@@ -106,6 +123,12 @@ class HtmlFileContent(FileContent):
             if link_tag.get("rel") == ["stylesheet"] and link_tag.get("href"):
                 yield link_tag["href"], actions.ReplaceHtmlValueAction("link", "href", link_tag["href"])
 
+        # use
+        for use_tag in soup.find_all("use"):
+            if use_tag.get("xlink:href"):
+                value = use_tag["xlink:href"]
+                yield use_tag["xlink:href"], actions.ReplaceHtmlValueAction("use", "xlink:href", value)
+
         # a
         for a_tag in soup.find_all("a"):
             href = a_tag.get("href")
@@ -129,3 +152,12 @@ class CssFileContent(FileContent):
                 continue
 
             yield value.strip("\""), actions.ReplaceCssUrlAction(value)
+
+
+class JavaScriptFileContent(FileContent):
+    def write(self):
+        self._actions.append(actions.ReplaceSaveURLAction())
+        super().write()
+
+    def find_links(self):
+        return []
