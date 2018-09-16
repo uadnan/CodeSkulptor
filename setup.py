@@ -27,7 +27,10 @@ def download_file(url):
     directory = tempfile.mkdtemp()
     local_filename = os.path.join(directory, "www.zip")
 
-    r = requests.get(url, stream=True)
+    r = requests.get(url, stream=True, headers={
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) Chrome/69.0.3497.92 Safari/537.36",
+        "Accept": "text/html,*/*"
+    })
     with open(local_filename, 'wb') as f:
         for chunk in r.iter_content(chunk_size=1024):
             if chunk:
