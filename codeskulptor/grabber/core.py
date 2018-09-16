@@ -81,7 +81,7 @@ class Grabber:
 
         try:
             response = self.session.get(url, stream=True)
-        except Exception:
+        except requests.HTTPError:
             logging.exception("Error downloading: %s" % url)
             return
 
