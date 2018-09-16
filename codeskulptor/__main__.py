@@ -50,13 +50,6 @@ def parse_args():
         required=False,
         default="2"
     )
-    runserver.add_argument(
-        "--no-local-www",
-        dest="ignore_local_www",
-        action="store_true",
-        help="Don't serve local copy of www directory instead server www shipped with module",
-        default=False
-    )
     runserver.set_defaults(action="runserver")
 
     grabber = subparsers.add_parser(
@@ -84,6 +77,6 @@ if __name__ == "__main__":
         if address is None:
             address = (DEFAULT_HOST, DEFAULT_PY2_PORT if args.version == 2 else DEFAULT_PY3_PORT)
 
-        interface.run_server(address, args.version, args.ignore_local_www)
+        interface.run_server(address, args.version)
     elif args.action == "grabber":
         interface.run_grabber(args.verbose)

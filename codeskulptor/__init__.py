@@ -8,5 +8,5 @@ DEFAULT_PY2_PORT = 9080
 DEFAULT_PY3_PORT = 9081
 
 USER_HOME = os.path.expanduser("~")
-WWW_ROOT = os.path.join(os.path.dirname(__file__), "www")
-LOCAL_WWW_ROOT = os.path.join(USER_HOME, ".codeskulptor")
+WWW_ROOT = os.path.join(USER_HOME, ".codeskulptor")
+WWW_ROOT_ZIP = os.path.join(os.path.dirname(__file__), "www.zip")
