@@ -57,6 +57,7 @@ def parse_args():
         help="Don't serve local copy of www directory instead server www shipped with module",
         default=False
     )
+    runserver.set_defaults(action="runserver")
 
     grabber = subparsers.add_parser(
         "grabber",
@@ -70,6 +71,7 @@ def parse_args():
         help="Output logs while grabbing",
         default=False
     )
+    grabber.set_defaults(action="grabber")
 
     return parser.parse_args()
 
