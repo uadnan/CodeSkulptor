@@ -14,7 +14,7 @@ def read(file_name):
 
 from codeskulptor import __version__
 
-GITHUB_RELEASE = "6e60cf9dba27dea3f405"
+GITHUB_RELEASE = "2018.09.16"
 EXCLUDE_FROM_PACKAGES = [
     'codeskulptor.bin',
 ]
