@@ -81,5 +81,7 @@ def serve(address, directory):
     try:
         server = HTTPServer(address, CodeSkulptorRequestHandler)
         server.serve_forever()
+    except KeyboardInterrupt:
+        print("\n\nBye Bye!")
     finally:
         os.chdir(current_dir)
