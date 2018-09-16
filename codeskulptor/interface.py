@@ -35,7 +35,7 @@ def run_server(address, version):
     this_www = os.path.join(WWW_ROOT, "py%s" % version)
 
     if not os.path.exists(this_www) and os.path.exists(WWW_ROOT_ZIP):
-        with zipfile.ZipFile(WWW_ROOT_ZIP, 'r') as f:
+        with zipfile.ZipFile(WWW_ROOT_ZIP, "r") as f:
             f.extractall(WWW_ROOT)
 
     print("""Starting CodeSkulptor server at http://{host}:{port}/
