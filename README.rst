@@ -28,4 +28,4 @@ To start http://www.codeskulptor.org/ i.e. Python 2 server
 And for https://py3.codeskulptor.org/ i.e. Python 3 server
 ::
 
-    $ codeksulptor-py3
+    $ codeskulptor-py3
