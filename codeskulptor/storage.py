@@ -1,7 +1,8 @@
 import os
-from pathlib import Path
 
-BASE_DIR = os.path.join(Path.home(), ".codeskulptor", "storage")
+from . import USER_HOME
+
+BASE_DIR = os.path.join(USER_HOME, ".codeskulptor", "storage")
 
 
 def abs_path(path):
