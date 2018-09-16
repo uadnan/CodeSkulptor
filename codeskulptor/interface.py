@@ -25,12 +25,8 @@ def run_grabber(verbose=False):
 
 
 def run_server(address, version, open_browser=True):
-    print("""Unofficial CodeSkulptor Local Server (version {version})
-    
-    For further details and issue reporting please visit https://github.com/uadnan/CodeSkulptor
-    """.format(
-        version=__version__
-    ))
+    print("Unofficial CodeSkulptor Local Server (version %s)" % __version__)
+    print("\nFor further details and issue reporting please visit https://github.com/uadnan/CodeSkulptor")
 
     this_www = os.path.join(WWW_ROOT, "py%s" % version)
 
@@ -38,13 +34,9 @@ def run_server(address, version, open_browser=True):
         with zipfile.ZipFile(WWW_ROOT_ZIP, "r") as f:
             f.extractall(WWW_ROOT)
 
-    print("""Starting CodeSkulptor server at http://{host}:{port}/
-    Serving from {directory}
-    Quit the server with CONTROL-C.""".format(
-        host=address[0],
-        port=address[1],
-        directory=this_www
-    ))
+    print("Starting CodeSkulptor server at http://%s:%s/" % address)
+    print("Serving from %s" % this_www)
+    print("Quit the server with CONTROL-C.")
 
     from .server import serve
 

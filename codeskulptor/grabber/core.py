@@ -107,11 +107,8 @@ class Grabber:
     def _suggest_destination(self, url, content_type):
         directories = []
 
-        if url.startswith(self.base_url):
-            url = url.replace(self.base_url, "")
-
         parsed_url = urlparse(url)
-        if parsed_url.netloc:
+        if parsed_url.netloc != self.base_url.netloc:
             directories.append(legalise_name(parsed_url.netloc))
 
         for p in parsed_url.path.lstrip("/").split("/"):

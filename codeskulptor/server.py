@@ -84,6 +84,8 @@ class CodeSkulptorHTTPServer(HTTPServer):
         if self.open_browser:
             webbrowser.open("http://%s:%s/" % self.server_address)
 
+        super().server_activate()
+
 
 def serve(address, directory, open_browser):
     current_dir = os.curdir
