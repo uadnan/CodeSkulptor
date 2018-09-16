@@ -1,5 +1,6 @@
 import multipart
 import os
+import webbrowser
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from io import BytesIO
@@ -74,12 +75,22 @@ class CodeSkulptorRequestHandler(SimpleHTTPRequestHandler):
         self.end_headers()
 
 
-def serve(address, directory):
+class CodeSkulptorHTTPServer(HTTPServer):
+    def __init__(self, *args, **kwargs):
+        self.open_browser = kwargs.pop("open_browser", False)
+        super().__init__(*args, **kwargs)
+
+    def server_activate(self):
+        if self.open_browser:
+            webbrowser.open("http://%s:%s/" % self.server_address)
+
+
+def serve(address, directory, open_browser):
     current_dir = os.curdir
     os.chdir(directory)
 
     try:
-        server = HTTPServer(address, CodeSkulptorRequestHandler)
+        server = CodeSkulptorHTTPServer(address, CodeSkulptorRequestHandler, open_browser=open_browser)
         server.serve_forever()
     except KeyboardInterrupt:
         print("\n\nBye Bye!")

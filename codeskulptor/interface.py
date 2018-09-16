@@ -24,7 +24,7 @@ def run_grabber(verbose=False):
     print("\nAll Done!")
 
 
-def run_server(address, version):
+def run_server(address, version, open_browser=True):
     print("""Unofficial CodeSkulptor Local Server (version {version})
     
     For further details and issue reporting please visit https://github.com/uadnan/CodeSkulptor
@@ -48,7 +48,7 @@ def run_server(address, version):
 
     from .server import serve
 
-    serve(address, this_www)
+    serve(address, this_www, open_browser=open_browser)
 
 
 def run_py2(host=DEFAULT_HOST, port=DEFAULT_PY2_PORT):

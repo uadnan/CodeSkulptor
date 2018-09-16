@@ -50,6 +50,14 @@ def parse_args():
         required=False,
         default="2"
     )
+    runserver.add_argument(
+        "--no-browser",
+        dest="open_browser",
+        help="Don't automatically open Web browser",
+        required=False,
+        action="store_false",
+        default=True
+    )
     runserver.set_defaults(action="runserver")
 
     grabber = subparsers.add_parser(
@@ -77,6 +85,6 @@ if __name__ == "__main__":
         if address is None:
             address = (DEFAULT_HOST, DEFAULT_PY2_PORT if args.version == 2 else DEFAULT_PY3_PORT)
 
-        interface.run_server(address, args.version)
+        interface.run_server(address, args.version, args.open_browser)
     elif args.action == "grabber":
         interface.run_grabber(args.verbose)
