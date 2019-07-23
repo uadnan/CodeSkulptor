@@ -48,11 +48,13 @@ def runserver(host, port, codeskulptor, browser):
 
 
 @cli.command()
-def grabber():
+@click.option('--clean', is_flag=True, default=False, help='Remove existing copy from local disk')
+@click.option('--zip', is_flag=True, help='Archive grabbed resources into zip file')
+def grabber(clean, zip):
     """
     Grab fresh copy of http://www.codeskulptor.org and https://py3.codeskulptor.org
     """
-    interface.run_grabber()
+    interface.run_grabber(clean=clean, archive=zip)
 
 
 if __name__ == "__main__":
