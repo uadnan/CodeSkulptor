@@ -10,7 +10,7 @@ If you wish to use CodeSkulptor even when you are away from internet connection,
 --------------
  Installation
 --------------
-CodeSkulptor requires atleast Python 3.5 or higher. If you don't have Python running on your system please download and install latest version of Python from https://www.python.org/downloads/. Once you have Python up and running on your machine, you can use pip to install CodeSkulptor.
+CodeSkulptor requires Python 3.5 or higher. If you don't have Python running on your system please download and install latest version of Python from https://www.python.org/downloads/. Once you have Python up and running on your machine, you can use pip to install CodeSkulptor.
 
 ::
 
