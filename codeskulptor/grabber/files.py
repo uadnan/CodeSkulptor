@@ -1,9 +1,10 @@
 import re
+
 from bs4 import BeautifulSoup
 
-from .constants import DISALLOWED_HOSTS
-from . import actions
-from .urls import normalise_url, is_absolute_url
+from codeskulptor.grabber import actions
+from codeskulptor.grabber.constants import DISALLOWED_HOSTS
+from codeskulptor.grabber.urls import normalise_url, is_absolute_url
 
 
 def get_file_handler(extension):

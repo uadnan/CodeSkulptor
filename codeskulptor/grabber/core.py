@@ -1,12 +1,13 @@
-import logging
 import os
-import requests
 import shutil
 from urllib.parse import urlparse
 
-from .constants import LEGAL_FILENAME_CHAR, EXTENSION_BY_MIME_TYPE
-from .files import get_file_handler
-from .urls import UrlStorage, normalise_url
+import requests
+
+from codeskulptor import logger
+from codeskulptor.grabber.constants import LEGAL_FILENAME_CHAR, EXTENSION_BY_MIME_TYPE
+from codeskulptor.grabber.files import get_file_handler
+from codeskulptor.grabber.urls import UrlStorage, normalise_url
 
 
 def touch(path):
@@ -24,8 +25,7 @@ def legalise_name(name):
 
 
 class Grabber:
-    def __init__(self, base_url, verbose=False):
-        self.verbose = verbose
+    def __init__(self, base_url):
         self.base_url = normalise_url(base_url.rstrip("/"))
         self.session = requests.Session()
         self.session.headers["User-Agent"] = "Mozilla/5.0 Chrome/68.0.3440.106 Safari/537.36"
@@ -76,13 +76,12 @@ class Grabber:
                 index += 1
 
     def download(self, url):
-        if self.verbose:
-            print("Downloading %s" % url)
+        logger.debug("Downloading %s" % url)
 
         try:
             response = self.session.get(url, stream=True)
         except requests.HTTPError:
-            logging.exception("Error downloading: %s" % url)
+            logger.exception("Error downloading: %s" % url)
             return
 
         content_type = response.headers.get("Content-Type", "text/plain").split(";")[0].strip()

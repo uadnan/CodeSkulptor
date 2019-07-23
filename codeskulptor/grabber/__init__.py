@@ -1,1 +1,1 @@
-from .core import Grabber
+from codeskulptor.grabber.core import Grabber

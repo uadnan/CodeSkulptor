@@ -6,8 +6,7 @@ from io import BytesIO
 
 import multipart
 
-from . import __version__
-from . import storage
+from codeskulptor import __version__, storage
 
 
 class CodeSkulptorRequestHandler(SimpleHTTPRequestHandler):
@@ -94,7 +93,5 @@ def serve(address, directory, open_browser):
     try:
         server = CodeSkulptorHTTPServer(address, CodeSkulptorRequestHandler, open_browser=open_browser)
         server.serve_forever()
-    except KeyboardInterrupt:
-        print("\n\nBye Bye!")
     finally:
         os.chdir(current_dir)

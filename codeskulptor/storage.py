@@ -1,6 +1,6 @@
 import os
 
-from . import USER_HOME
+from codeskulptor import USER_HOME
 
 BASE_DIR = os.path.join(USER_HOME, ".codeskulptor", "storage")
 
