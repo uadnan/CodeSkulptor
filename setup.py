@@ -15,6 +15,7 @@ def read(file_name):
 from codeskulptor import __version__
 
 GITHUB_RELEASE = "2018.09.16"
+REQUESTS_LIB = "requests==2.22.0"
 EXCLUDE_FROM_PACKAGES = [
     'codeskulptor.bin',
 ]
@@ -94,9 +95,9 @@ setup(
         'codeskulptor-py3 = codeskulptor.interface:run_py3',
     ]},
     install_requires=[
-        'beautifulsoup4',
-        'multipart',
-        'requests'
+        'beautifulsoup4==4.8.0',
+        'multipart==0.2',
+        REQUESTS_LIB
     ],
     zip_safe=False,
     classifiers=[

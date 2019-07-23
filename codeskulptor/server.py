@@ -1,10 +1,10 @@
-import multipart
 import os
 import webbrowser
 from http import HTTPStatus
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from io import BytesIO
-from multipart import tob
+
+import multipart
 
 from . import __version__
 from . import storage
@@ -17,7 +17,7 @@ class CodeSkulptorRequestHandler(SimpleHTTPRequestHandler):
         content_length = int(self.headers['Content-Length'])
         post_data = self.rfile.read(content_length).decode("utf8")
 
-        parser = multipart.MultipartParser(BytesIO(tob(post_data)), post_data.split("\r")[0][2:])
+        parser = multipart.MultipartParser(BytesIO(multipart.to_bytes(post_data)), post_data.split("\r")[0][2:])
         parts = parser.parts()
 
         return {
