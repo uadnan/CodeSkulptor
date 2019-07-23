@@ -1,18 +1,20 @@
 import os
 import shutil
+import sys
+import tempfile
 import zipfile
 
 from setuptools import find_packages, setup
 from setuptools.command.develop import develop
 from setuptools.command.install import install
 
+from codeskulptor import __version__
+
 
 def read(file_name):
     with open(os.path.join(os.path.dirname(__file__), file_name)) as f:
         return f.read()
 
-
-from codeskulptor import __version__
 
 GITHUB_RELEASE = "2018.09.16"
 REQUESTS_LIB = "requests==2.22.0"
@@ -22,11 +24,15 @@ EXCLUDE_FROM_PACKAGES = [
 
 
 def download_file(url):
-    import requests
-    import tempfile
-
     directory = tempfile.mkdtemp()
     local_filename = os.path.join(directory, "www.zip")
+
+    try:
+        import requests
+    except ImportError:
+        os.system('"{}" -m pip install "{}"'.format(sys.executable, REQUESTS_LIB))
+
+        import requests
 
     r = requests.get(url, stream=True, headers={
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) Chrome/69.0.3497.92 Safari/537.36",
