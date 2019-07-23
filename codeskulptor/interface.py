@@ -23,8 +23,8 @@ def run_grabber():
     logger.info("\nAll Done!")
 
 
-def run_server(address, version, open_browser=True):
-    this_www = os.path.join(WWW_ROOT, version)
+def run_server(address, codeskulptor_version, open_browser=True):
+    this_www = os.path.join(WWW_ROOT, codeskulptor_version)
 
     if not os.path.exists(this_www) and os.path.exists(WWW_ROOT_ZIP):
         with zipfile.ZipFile(WWW_ROOT_ZIP, "r") as f:
@@ -40,8 +40,8 @@ def run_server(address, version, open_browser=True):
 
 
 def run_py2(host=DEFAULT_HOST, port=DEFAULT_PY2_PORT):
-    run_server((host, port), version=2)
+    run_server((host, port), codeskulptor_version="py2")
 
 
 def run_py3(host=DEFAULT_HOST, port=DEFAULT_PY3_PORT):
-    run_server((host, port), version=3)
+    run_server((host, port), codeskulptor_version="py3")
