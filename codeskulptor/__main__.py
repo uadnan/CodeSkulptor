@@ -1,90 +1,59 @@
-import argparse
+import logging
 
-from . import __version__, interface, DEFAULT_HOST, DEFAULT_PY3_PORT, DEFAULT_PY2_PORT
+import click
+
+from codeskulptor import __version__, DEFAULT_HOST, DEFAULT_PY2_PORT, DEFAULT_PY3_PORT
+from codeskulptor import logger, interface
 
 
-def validate_host(value):
-    parts = value.split(":")
+@click.group()
+@click.option('--version', is_flag=True)
+@click.option('-v', '--verbose', count=True, default=1, help="Increase verbosity")
+def cli(verbose, version):
+    """
+    Unofficial CodeSkulptor Local Server
+    """
+    if version:
+        print(__version__)
+        exit(0)
 
-    if len(parts) == 1:
-        host = DEFAULT_HOST
-        port = parts[0]
-    elif len(parts) == 2:
-        host = parts[0]
-        port = parts[1]
+    print("Unofficial CodeSkulptor Local Server (version %s)" % __version__)
+    print("For further details and issue reporting please visit https://github.com/uadnan/CodeSkulptor")
+    print()
+
+    if verbose >= 2:
+        logger.setLevel(logging.DEBUG)
+    elif verbose == 1:
+        logger.setLevel(logging.INFO)
     else:
-        raise argparse.ArgumentTypeError("Either provider port number or ip:port")
-
-    if not port.isdigit():
-        raise argparse.ArgumentTypeError("%s is not a valid port" % port)
-    else:
-        port = int(port)
-
-    return host, port
+        logger.setLevel(logging.WARNING)
 
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="CodeSkulptor Local Server (version %s)" % __version__,
-        prog="codeskulptor",
-    )
+@cli.command()
+@click.option('-p', '--port', type=click.IntRange(1, 65534), help='Optional server port number')
+@click.option('-h', '--host', default=DEFAULT_HOST, show_default=True,
+              help='Optional server host address')
+@click.option('--browser/--no-browser', default=True, show_default=True,
+              help='Open browser automatically after launching the server')
+@click.option('-c', '--codeskulptor', type=click.Choice(["py2", "py3"]), default="py2", show_default=True,
+              help='Codeskulptor version to use')
+def runserver(host, port, codeskulptor, browser):
+    """
+    Starts a lightweight Web server for CodeSkulptor and also serves static files.
+    """
+    if port is None:
+        port = DEFAULT_PY2_PORT if codeskulptor == "py2" else DEFAULT_PY3_PORT
 
-    subparsers = parser.add_subparsers(title="action", description="Action to perform")
+    interface.run_server((host, port), codeskulptor, browser)
 
-    runserver = subparsers.add_parser(
-        "runserver",
-        help="Starts a lightweight Web server for CodeSkulptor and also serves static files.",
-        usage='%(prog)s [options] ...'
-    )
-    runserver.add_argument(
-        "address",
-        nargs='?',
-        type=validate_host,
-        help="Optional port number, or ip:port",
-        default=None
-    )
-    runserver.add_argument(
-        "--version",
-        choices=["2", "3"],
-        help="Which version of CodeSkulptor to serve",
-        required=False,
-        default="2"
-    )
-    runserver.add_argument(
-        "--no-browser",
-        dest="open_browser",
-        help="Don't automatically open Web browser",
-        required=False,
-        action="store_false",
-        default=True
-    )
-    runserver.set_defaults(action="runserver")
 
-    grabber = subparsers.add_parser(
-        "grabber",
-        help="Grab fresh copy of http://www.codeskulptor.org and https://py3.codeskulptor.org",
-        usage='%(prog)s [options] ...'
-    )
-    grabber.add_argument(
-        "--verbose",
-        dest="verbose",
-        action="store_true",
-        help="Output logs while grabbing",
-        default=False
-    )
-    grabber.set_defaults(action="grabber")
-
-    return parser.parse_args()
+@cli.command()
+def grabber():
+    """
+    Grab fresh copy of http://www.codeskulptor.org and https://py3.codeskulptor.org
+    """
+    interface.run_grabber()
 
 
 if __name__ == "__main__":
-    args = parse_args()
-
-    if args.action == "runserver":
-        address = args.address
-        if address is None:
-            address = (DEFAULT_HOST, DEFAULT_PY2_PORT if args.version == 2 else DEFAULT_PY3_PORT)
-
-        interface.run_server(address, args.version, args.open_browser)
-    elif args.action == "grabber":
-        interface.run_grabber(args.verbose)
+    cli()

@@ -103,6 +103,7 @@ setup(
     install_requires=[
         'beautifulsoup4==4.8.0',
         'multipart==0.2',
+        'click==7.0',
         REQUESTS_LIB
     ],
     zip_safe=False,
