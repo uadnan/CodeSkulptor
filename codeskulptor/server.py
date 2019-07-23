@@ -93,5 +93,7 @@ def serve(address, directory, open_browser):
     try:
         server = CodeSkulptorHTTPServer(address, CodeSkulptorRequestHandler, open_browser=open_browser)
         server.serve_forever()
+    except KeyboardInterrupt:
+        pass
     finally:
         os.chdir(current_dir)
