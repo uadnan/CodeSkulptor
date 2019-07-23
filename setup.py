@@ -109,9 +109,16 @@ setup(
     zip_safe=False,
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        'License :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python'
+
+        'License :: MIT License',
+        'Topic :: Education :: System',
+        'Intended Audience :: Developers',
+
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
     cmdclass={
         'develop': PostDevelopCommand,
